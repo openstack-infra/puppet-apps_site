@@ -1,0 +1,24 @@
+<VirtualHost *:80>
+    ServerAdmin <%= @serveradmin %>
+    ServerName <%= @vhost_name %>
+
+    DocumentRoot <%= @docroot %>
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+    <Directory <%= @docroot %>>
+        Allow from all
+        Satisfy Any
+    </Directory>
+
+    ErrorLog /var/log/apache2/app_site-error.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog /var/log/apache2/app_site-access.log combined
+    ServerSignature Off
+
+</VirtualHost>
