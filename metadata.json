@@ -1,0 +1,12 @@
+{
+  "name": "openstackci-app_site",
+  "version": "0.0.1",
+  "author": "OpenStack CI",
+  "summary": "Puppet module for OpenStack App Catalog",
+  "license": "Apache 2.0",
+  "source": "git://git.openstack.org/openstack-infra/puppet-app_site.git",
+  "project_page": "http://docs.openstack.org/publications/infra",
+  "issues_url": "https://storyboard.openstack.org",
+  "dependencies": [
+  ]
+}
