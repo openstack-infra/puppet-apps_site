@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: Jeremy Stanley <fungi@yuggoth.org>
+Workflow+1: Jeremy Stanley <fungi@yuggoth.org>
+Code-Review+2: Sergey Lukjanov <slukjanov@mirantis.com>
+Submitted-by: Jenkins
+Submitted-at: Thu, 04 Jun 2015 15:00:45 +0000
+Reviewed-on: https://review.openstack.org/187018
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
