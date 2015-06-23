@@ -34,4 +34,8 @@ class apps_site (
     vhost_name => $vhost_name,
   }
 
+  a2mod { 'headers':
+    ensure => present
+  }
+
 }

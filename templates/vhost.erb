@@ -10,6 +10,7 @@
     <Directory <%= @docroot %>>
         Allow from all
         Satisfy Any
+        Header set Access-Control-Allow-Origin "*"
     </Directory>
 
     ErrorLog /var/log/apache2/app_site-error.log
