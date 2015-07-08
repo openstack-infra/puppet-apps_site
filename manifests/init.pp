@@ -24,9 +24,9 @@ class apps_site (
     ]
   }
 
-  include apache
+  include ::apache
 
-  apache::vhost { $vhost_name:
+  ::apache::vhost { $vhost_name:
     port       => 80,
     docroot    => "${root_dir}/openstack_catalog/web",
     priority   => '50',
