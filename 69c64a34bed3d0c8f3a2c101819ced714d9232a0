@@ -1,0 +1,12 @@
+Code-Review+2: James E. Blair <corvus@inaugust.com>
+Workflow+1: James E. Blair <corvus@inaugust.com>
+Verified+2: Jenkins
+Code-Review+2: Jeremy Stanley <fungi@yuggoth.org>
+Code-Review+2: yolanda.robla <info@ysoft.biz>
+Code-Review+1: Kevin Fox <kevin@efox.cc>
+Code-Review+1: Clint Adams <clint@gcfm.net>
+Submitted-by: Jenkins
+Submitted-at: Tue, 14 Jul 2015 16:48:23 +0000
+Reviewed-on: https://review.openstack.org/194875
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
