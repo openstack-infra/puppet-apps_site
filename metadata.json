@@ -9,6 +9,6 @@
   "issues_url": "https://storyboard.openstack.org/#!/project/817",
   "dependencies": [
     { "name": "openstackinfra/vcsrepo","version_requirement":">= 0.0.8"},
-    { "name": "puppetlabs/apache", "version_requirement": "= 0.0.4" }
+    { "name": "openstackinfra/httpd", "version_requirement": "0.x" }
   ]
 }
