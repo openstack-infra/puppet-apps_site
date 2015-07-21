@@ -1,3 +1,5 @@
+# THIS FILE IS MANAGED BY THE PUPPET MODULES SYNC REPO - DO NOT EDIT
+
 source 'https://rubygems.org'
 
 group :development, :test do
