@@ -44,26 +44,19 @@ class apps_site (
     }
   }
 
-  exec { 'make_glance_json' :
-    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/glance_images.yaml > ${root_dir}/openstack_catalog/web/static/glance_images.json",
+  file { "${root_dir}/openstack_catalog/web/api":
+    ensure => directory,
+  }
+
+  file { "${root_dir}/openstack_catalog/web/api/v1":
+    ensure => directory,
+  }
+
+  exec { 'make_assets_json' :
+    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/assets.yaml > ${root_dir}/openstack_catalog/web/api/v1/assets",
     path        => '/usr/local/bin:/usr/bin:/bin',
     refreshonly => true,
     subscribe   => Vcsrepo[$root_dir],
   }
-
-  exec { 'make_heat_json' :
-    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/heat_templates.yaml > ${root_dir}/openstack_catalog/web/static/heat_templates.json",
-    path        => '/usr/local/bin:/usr/bin:/bin',
-    refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
-  }
-
-  exec { 'make_murano_json' :
-    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/murano_apps.yaml > ${root_dir}/openstack_catalog/web/static/murano_apps.json",
-    path        => '/usr/local/bin:/usr/bin:/bin',
-    refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
-  }
-
 
 }
