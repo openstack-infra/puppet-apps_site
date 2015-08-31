@@ -38,8 +38,22 @@ class apps_site (
     ensure => present
   }
 
+  httpd_mod { 'rewrite':
+    ensure => present
+  }
+
+  httpd_mod { 'deflate':
+    ensure => present
+  }
+
   if ! defined(Package['python-yaml']) {
     package { 'python-yaml':
+      ensure => present,
+    }
+  }
+
+  if ! defined(Package['zopfli']) {
+    package { 'zopfli':
       ensure => present,
     }
   }
@@ -53,7 +67,7 @@ class apps_site (
   }
 
   exec { 'make_assets_json' :
-    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/assets.yaml > ${root_dir}/openstack_catalog/web/api/v1/assets",
+    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/assets.yaml > ${root_dir}/openstack_catalog/web/api/v1/assets.tmp; zopfli --i150 -c ${root_dir}/openstack_catalog/web/api/v1/assets.tmp > ${root_dir}/openstack_catalog/web/api/v1/assets.gz.tmp; mv ${root_dir}/openstack_catalog/web/api/v1/assets.gz.tmp ${root_dir}/openstack_catalog/web/api/v1/assets.gz; mv ${root_dir}/openstack_catalog/web/api/v1/assets.tmp ${root_dir}/openstack_catalog/web/api/v1/assets",
     path        => '/usr/local/bin:/usr/bin:/bin',
     refreshonly => true,
     subscribe   => Vcsrepo[$root_dir],
