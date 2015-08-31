@@ -11,9 +11,26 @@
         Allow from all
         Satisfy Any
     </Directory>
-    <Directory <%= @docroot %>/static/>
+    <Location "/api/v1/assets">
         Header set Access-Control-Allow-Origin "*"
-    </Directory>
+        Header set Content-type "application/json"
+        Header set Access-Control-Allow-Headers "Origin, Accept-Encoding, Content-Type, X-App-Catalog-Versions"
+        Header set Access-Control-Max-Age 3600
+        Header set Cache-Control max-age=3600
+        Header set Access-Control-Allow-Methods "GET, OPTIONS"
+        SetOutputFilter DEFLATE
+    </Location>
+
+    RewriteEngine On
+
+    RewriteRule "^/api/v1/assets\.gz$" "-" [T=application/json,E=no-gzip:1]
+
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(/api/v1/assets)$ /static/blank.json [QSA,L]
+
+    RewriteCond "%{HTTP:Accept-Encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(/api/v1/assets)" "$1\.gz" [QSA]
 
     ErrorLog /var/log/apache2/app_site-error.log
 
