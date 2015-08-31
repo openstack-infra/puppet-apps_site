@@ -11,9 +11,10 @@
         Allow from all
         Satisfy Any
     </Directory>
-    <Directory <%= @docroot %>/static/>
+    <Location "/api/v1/assets">
         Header set Access-Control-Allow-Origin "*"
-    </Directory>
+        Header set Content-type "application/json"
+    </Location>
 
     ErrorLog /var/log/apache2/app_site-error.log
 
