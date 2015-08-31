@@ -1,0 +1,11 @@
+Code-Review+2: Monty Taylor <mordred@inaugust.com>
+Verified+2: Jenkins
+Code-Review+1: matthew wagoner <zxkuqyb@gmail.com>
+Code-Review+2: Spencer Krum <nibz@spencerkrum.com>
+Workflow+1: Spencer Krum <nibz@spencerkrum.com>
+Code-Review+1: Kevin Fox <kevin@efox.cc>
+Submitted-by: Jenkins
+Submitted-at: Mon, 31 Aug 2015 03:01:59 +0000
+Reviewed-on: https://review.openstack.org/205882
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
