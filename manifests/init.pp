@@ -35,11 +35,28 @@ class apps_site (
   }
 
   httpd_mod { 'headers':
-    ensure => present
+    ensure => present,
+    notify => Service['httpd']
+  }
+
+  httpd_mod { 'rewrite':
+    ensure => present,
+    notify => Service['httpd']
+  }
+
+  httpd_mod { 'deflate':
+    ensure => present,
+    notify => Service['httpd']
   }
 
   if ! defined(Package['python-yaml']) {
     package { 'python-yaml':
+      ensure => present,
+    }
+  }
+
+  if ! defined(Package['zopfli']) {
+    package { 'zopfli':
       ensure => present,
     }
   }
@@ -53,7 +70,7 @@ class apps_site (
   }
 
   exec { 'make_assets_json' :
-    command     => "python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout)' < ${root_dir}/openstack_catalog/web/static/assets.yaml > ${root_dir}/openstack_catalog/web/api/v1/assets",
+    command     => "${root_dir}/tools/update_assets.sh",
     path        => '/usr/local/bin:/usr/bin:/bin',
     refreshonly => true,
     subscribe   => Vcsrepo[$root_dir],
