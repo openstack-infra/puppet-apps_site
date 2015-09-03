@@ -1,0 +1,10 @@
+Verified+2: Jenkins
+Code-Review+2: Clark Boylan <cboylan@sapwetik.org>
+Workflow+1: Clark Boylan <cboylan@sapwetik.org>
+Code-Review+2: yolanda.robla <info@ysoft.biz>
+Code-Review+1: Kevin Fox <kevin@efox.cc>
+Submitted-by: Jenkins
+Submitted-at: Thu, 03 Sep 2015 20:09:21 +0000
+Reviewed-on: https://review.openstack.org/218898
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
