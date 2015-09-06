@@ -18,7 +18,7 @@ class apps_site (
     ensure   => latest,
     provider => git,
     revision => $commit,
-    source   => 'https://git.openstack.org/stackforge/apps-catalog.git',
+    source   => 'https://git.openstack.org/openstack/app-catalog.git',
     require  => [
       Package['git'],
     ]
