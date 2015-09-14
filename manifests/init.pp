@@ -55,18 +55,12 @@ class apps_site (
     }
   }
 
-  if ! defined(Package['zopfli']) {
-    package { 'zopfli':
-      ensure => present,
+  if ($::lsbdistcodename == 'trusty') {
+    if ! defined(Package['zopfli']) {
+      package { 'zopfli':
+        ensure => present,
+      }
     }
-  }
-
-  file { "${root_dir}/openstack_catalog/web/api":
-    ensure => directory,
-  }
-
-  file { "${root_dir}/openstack_catalog/web/api/v1":
-    ensure => directory,
   }
 
   exec { 'make_assets_json' :
