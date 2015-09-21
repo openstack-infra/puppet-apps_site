@@ -1,0 +1,13 @@
+Verified+2: Jenkins
+Code-Review+2: Jeremy Stanley <fungi@yuggoth.org>
+Workflow+1: Jeremy Stanley <fungi@yuggoth.org>
+Code-Review+2: yolanda.robla <info@ysoft.biz>
+Code-Review+1: Kevin Fox <kevin@efox.cc>
+Code-Review+1: Christopher Aedo <doc@aedo.net>
+Code-Review+1: Clint Adams <clint@gcfm.net>
+Code-Review+1: Bruno Tavares <btavare@thoughtworks.com>
+Submitted-by: Jenkins
+Submitted-at: Mon, 21 Sep 2015 17:32:23 +0000
+Reviewed-on: https://review.openstack.org/224869
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
