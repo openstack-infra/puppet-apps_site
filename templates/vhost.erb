@@ -42,5 +42,68 @@
 
     CustomLog /var/log/apache2/app_site-access.log combined
     ServerSignature Off
+</VirtualHost>
 
+<VirtualHost *:443>
+    ServerAdmin <%= @serveradmin %>
+    ServerName <%= @vhost_name %>
+
+    ErrorLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-error.log
+    CustomLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-access.log combined
+
+    SSLEngine on
+    SSLProtocol All -SSLv2 -SSLv3
+
+    SSLCertificateFile      <%= @ssl_cert_file %>
+    SSLCertificateKeyFile   <%= @ssl_key_file %>
+    <% if @ssl_chain_file != nil %>
+      SSLCertificateChainFile <%= @ssl_chain_file %>
+    <% end %>
+
+    BrowserMatch "MSIE [2-6]" \
+            nokeepalive ssl-unclean-shutdown \
+            downgrade-1.0 force-response-1.0
+    # MSIE 7 and newer should be able to use keepalive
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+    DocumentRoot <%= @docroot %>
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+    <Directory <%= @docroot %>>
+        Allow from all
+        Satisfy Any
+    </Directory>
+    <Location "/api/v1/assets">
+        Header set Access-Control-Allow-Origin "*"
+        Header set Content-type "application/json"
+        Header set Access-Control-Allow-Headers "Origin, Accept-Encoding, Content-Type, X-App-Catalog-Versions"
+        Header set Access-Control-Max-Age 3600
+        Header set Cache-Control max-age=3600
+        Header set Access-Control-Allow-Methods "GET, OPTIONS"
+        SetOutputFilter DEFLATE
+    </Location>
+
+    RewriteEngine On
+
+    RewriteRule "^/api/v1/assets\.gz$" "-" [T=application/json,E=no-gzip:1]
+
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(/api/v1/assets)$ /static/blank.json [QSA,L]
+
+    RewriteCond "%{HTTP:Accept-Encoding}" "gzip"
+    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
+    RewriteRule "^(/api/v1/assets)" "$1\.gz" [QSA]
+
+    RedirectMatch ^/api/v1/murano_repo/liberty/(.*)$ http://storage.apps.openstack.org/$1
+
+    ErrorLog /var/log/apache2/app_site-error.log
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+
+    CustomLog /var/log/apache2/app_site-access.log combined
+    ServerSignature Off
 </VirtualHost>
