@@ -1,12 +1,18 @@
 # == Class: apps_site
 #
 class apps_site (
-  $vhost_name = $::fqdn,
-  $root_dir = '/opt/apps_site',
-  $serveradmin = "webmaster@${::domain}",
-
-  $commit = 'master',
+  $vhost_name              = $::fqdn,
+  $root_dir                = '/opt/apps_site',
+  $serveradmin             = "webmaster@${::domain}",
+  $commit                  = 'master',
+  $ssl_cert_file_contents  = undef,
+  $ssl_key_file_contents   = undef,
+  $ssl_chain_file_contents = undef,
+  $ssl_cert_file           = '/etc/ssl/certs/ssl-cert-snakeoil.pem',
+  $ssl_key_file            = '/etc/ssl/private/ssl-cert-snakeoil.key',
+  $ssl_chain_file          = undef,
 ) {
+  include ::httpd::ssl
 
   if !defined(Package['git']) {
     package { 'git':
@@ -24,14 +30,13 @@ class apps_site (
     ]
   }
 
-  include ::httpd
-
   ::httpd::vhost { $vhost_name:
-    port       => 80,
+    port       => 443,
     docroot    => "${root_dir}/openstack_catalog/web",
     priority   => '50',
     template   => 'apps_site/vhost.erb',
     vhost_name => $vhost_name,
+    ssl        => true,
   }
 
   httpd_mod { 'headers':
@@ -47,6 +52,36 @@ class apps_site (
   httpd_mod { 'deflate':
     ensure => present,
     notify => Service['httpd']
+  }
+
+  if $ssl_cert_file_contents != undef {
+    file { $ssl_cert_file:
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0640',
+      content => $ssl_cert_file_contents,
+      before  => Httpd::Vhost[$vhost_name],
+    }
+  }
+
+  if $ssl_key_file_contents != undef {
+    file { $ssl_key_file:
+      owner   => 'root',
+      group   => 'ssl-cert',
+      mode    => '0640',
+      content => $ssl_key_file_contents,
+      before  => Httpd::Vhost[$vhost_name],
+    }
+  }
+
+  if $ssl_chain_file_contents != undef {
+    file { $ssl_chain_file:
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0640',
+      content => $ssl_chain_file_contents,
+      before  => Httpd::Vhost[$vhost_name],
+    }
   }
 
   if ! defined(Package['python-yaml']) {
