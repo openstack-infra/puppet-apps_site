@@ -1,6 +1,12 @@
+WSGIPythonHome /opt/virtenv-app-catalog
+
 <VirtualHost *:80>
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
+
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/opt/apps_site/:/opt/virtenv-app-catalog/env/lib/python2.7/site-packages
+    WSGIProcessGroup appcatalog
+    WSGIScriptAlias / /opt/apps_site/openstack_catalog/wsgi.py
 
     DocumentRoot <%= @docroot %>
     <Directory />
@@ -47,6 +53,10 @@
 <VirtualHost *:443>
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
+
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/opt/apps_site/:/opt/virtenv-app-catalog/env/lib/python2.7/site-packages
+    WSGIProcessGroup appcatalog
+    WSGIScriptAlias / /opt/apps_site/openstack_catalog/wsgi.py
 
     ErrorLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-error.log
     CustomLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-access.log combined
