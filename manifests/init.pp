@@ -3,6 +3,7 @@
 class apps_site (
   $vhost_name              = $::fqdn,
   $root_dir                = '/opt/apps_site',
+  $basedir                 = '/opt',
   $serveradmin             = "webmaster@${::domain}",
   $commit                  = 'master',
   $ssl_cert_file_contents  = undef,
@@ -13,6 +14,7 @@ class apps_site (
   $ssl_chain_file          = '/etc/ssl/certs/ca-certificates.crt',
 ) {
   include ::httpd::ssl
+  include ::httpd::mod::wsgi
 
   if !defined(Package['git']) {
     package { 'git':
@@ -28,6 +30,16 @@ class apps_site (
     require  => [
       Package['git'],
     ]
+  }
+
+  python::virtualenv { "${basedir}/virtenv-app-catalog":
+    ensure       => present,
+    version      => 'system',
+    requirements => "${root_dir}/requirements.txt",
+    systempkgs   => true,
+    distribute   => false,
+    cwd          => $root_dir,
+    subscribe    => Vcsrepo[$root_dir],
   }
 
   ::httpd::vhost { $vhost_name:

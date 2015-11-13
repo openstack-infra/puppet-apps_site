@@ -1,6 +1,16 @@
+WSGIPythonHome /opt/virtenv-app-catalog
+
 <VirtualHost *:80>
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
+
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/opt/apps_site/:/opt/virtenv-app-catalog/env/lib/python2.7/site-packages
+    WSGIProcessGroup appcatalog
+    WSGIScriptAlias / /opt/apps_site/openstack_catalog/wsgi.py
+
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/opt/virtenv-app-catalog/lib/python2.7:/opt/virtenv-app-catalog/lib/python2.7/plat-x86_64-linux-gnu:/opt/virtenv-app-catalog/lib/python2.7/lib-tk:/opt/virtenv-app-catalog/lib/python2.7/lib-old:/opt/virtenv-app-catalog/lib/python2.7/lib-dynload:/usr/lib/python2.7:/usr/lib/python2.7/plat-x86_64-linux-gnu:/usr/lib/python2.7/lib-tk:/opt/virtenv-app-catalog/local/lib/python2.7/site-packages:/opt/virtenv-app-catalog/lib/python2.7/site-packages
+    WSGIProcessGroup appcatalog
+    WSGIScriptAlias / /opt/virtenv-app-catalog/lib/python2.7/site-packages/openstack_catalog/wsgi.py
 
     DocumentRoot <%= @docroot %>
     <Directory />
@@ -10,6 +20,11 @@
     <Directory <%= @docroot %>>
         Allow from all
         Satisfy Any
+    </Directory>
+    <Directory /opt/virtenv-app-catalog>
+    Order allow,deny
+    Allow from all
+    Satisfy Any
     </Directory>
     <Location "/api/v1/assets">
         Header set Access-Control-Allow-Origin "*"
@@ -47,6 +62,10 @@
 <VirtualHost *:443>
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
+
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/opt/apps_site/:/opt/virtenv-app-catalog/env/lib/python2.7/site-packages
+    WSGIProcessGroup appcatalog
+    WSGIScriptAlias / /opt/apps_site/openstack_catalog/wsgi.py
 
     ErrorLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-error.log
     CustomLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-access.log combined
