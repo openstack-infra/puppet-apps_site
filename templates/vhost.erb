@@ -2,6 +2,12 @@
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
 
+    WSGIProcessGroup appcatalog
+    WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/usr/lib/python2.7:/usr/lib/python2.7/plat-x86_64-linux-gnu:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
+    WSGIScriptAlias / /usr/local/lib/python2.7/dist-packages/openstack_catalog/wsgi.py
+
+    Alias /static/ /opt/apps_site/openstack_catalog/web/static/
+
     DocumentRoot <%= @docroot %>
     <Directory />
         Options FollowSymLinks
@@ -11,28 +17,11 @@
         Allow from all
         Satisfy Any
     </Directory>
-    <Location "/api/v1/assets">
-        Header set Access-Control-Allow-Origin "*"
-        Header set Content-type "application/json"
-        Header set Access-Control-Allow-Headers "Origin, Accept-Encoding, Content-Type, X-App-Catalog-Versions"
-        Header set Access-Control-Max-Age 3600
-        Header set Cache-Control max-age=3600
-        Header set Access-Control-Allow-Methods "GET, OPTIONS"
-        SetOutputFilter DEFLATE
-    </Location>
-
-    RewriteEngine On
-
-    RewriteRule "^/api/v1/assets\.gz$" "-" [T=application/json,E=no-gzip:1]
-
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(/api/v1/assets)$ /static/blank.json [QSA,L]
-
-    RewriteCond "%{HTTP:Accept-Encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-    RewriteRule "^(/api/v1/assets)" "$1\.gz" [QSA]
-
-    RedirectMatch ^/api/v1/murano_repo/liberty/(.*)$ http://storage.apps.openstack.org/$1
+    <Directory /usr/local/lib/python2.7/dist-packages/openstack_catalog/>
+    Order allow,deny
+    Allow from all
+    Satisfy Any
+    </Directory>
 
     ErrorLog /var/log/apache2/app_site-error.log
 
@@ -48,8 +37,11 @@
     ServerAdmin <%= @serveradmin %>
     ServerName <%= @vhost_name %>
 
-    ErrorLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-error.log
-    CustomLog ${APACHE_LOG_DIR}/<%= @vhost_name %>-ssl-access.log combined
+    WSGIProcessGroup appcatalogssl
+    WSGIDaemonProcess appcatalogssl user=www-data group=www-data threads=5 python-path=/usr/lib/python2.7:/usr/lib/python2.7/plat-x86_64-linux-gnu:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
+    WSGIScriptAlias / /usr/local/lib/python2.7/dist-packages/openstack_catalog/wsgi.py
+
+    Alias /static/ /opt/apps_site/openstack_catalog/web/static/
 
     SSLEngine on
     SSLProtocol All -SSLv2 -SSLv3
@@ -75,28 +67,11 @@
         Allow from all
         Satisfy Any
     </Directory>
-    <Location "/api/v1/assets">
-        Header set Access-Control-Allow-Origin "*"
-        Header set Content-type "application/json"
-        Header set Access-Control-Allow-Headers "Origin, Accept-Encoding, Content-Type, X-App-Catalog-Versions"
-        Header set Access-Control-Max-Age 3600
-        Header set Cache-Control max-age=3600
-        Header set Access-Control-Allow-Methods "GET, OPTIONS"
-        SetOutputFilter DEFLATE
-    </Location>
-
-    RewriteEngine On
-
-    RewriteRule "^/api/v1/assets\.gz$" "-" [T=application/json,E=no-gzip:1]
-
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(/api/v1/assets)$ /static/blank.json [QSA,L]
-
-    RewriteCond "%{HTTP:Accept-Encoding}" "gzip"
-    RewriteCond "%{REQUEST_FILENAME}\.gz" -s
-    RewriteRule "^(/api/v1/assets)" "$1\.gz" [QSA]
-
-    RedirectMatch ^/api/v1/murano_repo/liberty/(.*)$ http://storage.apps.openstack.org/$1
+    <Directory /usr/local/lib/python2.7/dist-packages/openstack_catalog/>
+    Order allow,deny
+    Allow from all
+    Satisfy Any
+    </Directory>
 
     ErrorLog /var/log/apache2/app_site-error.log
 
