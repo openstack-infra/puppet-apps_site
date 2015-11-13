@@ -3,6 +3,7 @@
 class apps_site (
   $vhost_name              = $::fqdn,
   $root_dir                = '/opt/apps_site',
+  $basedir                 = '/opt',
   $serveradmin             = "webmaster@${::domain}",
   $commit                  = 'master',
   $ssl_cert_file_contents  = undef,
@@ -13,6 +14,7 @@ class apps_site (
   $ssl_chain_file          = '/etc/ssl/certs/ca-certificates.crt',
 ) {
   include ::httpd::ssl
+  include ::httpd::mod::wsgi
 
   if !defined(Package['git']) {
     package { 'git':
@@ -28,6 +30,16 @@ class apps_site (
     require  => [
       Package['git'],
     ]
+  }
+
+  python::virtualenv { "${basedir}/virtenv-app-catalog":
+    ensure       => present,
+    version      => 'system',
+    requirements => "${root_dir}/requirements.txt",
+    systempkgs   => true,
+    distribute   => false,
+    cwd          => $root_dir,
+    subscribe    => Vcsrepo[$root_dir],
   }
 
   ::httpd::vhost { $vhost_name:
@@ -96,6 +108,23 @@ class apps_site (
         ensure => present,
       }
     }
+  }
+
+  exec { 'install-app_catalog' :
+    command     => "/opt/virtenv-app-catalog/bin/python ${root_dir}/setup.py install",
+    path        => '/opt/virtenv-app-catalog/bin',
+    cwd         => $root_dir,
+    refreshonly => true,
+    subscribe   => Python::virtualenv["${basedir}/virtenv-app-catalog"],
+    notify      => Service['httpd'],
+  }
+
+  exec { 'collect-static' :
+    command     => "/opt/virtenv-app-catalog/bin/python ${root_dir}/manage.py collectstatic --noinput",
+    path        => '/opt/virtenv-app-catalog/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
+    notify      => Service['httpd'],
   }
 
   exec { 'make_assets_json' :
