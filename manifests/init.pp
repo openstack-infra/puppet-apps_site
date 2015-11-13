@@ -13,6 +13,7 @@ class apps_site (
   $ssl_chain_file          = '/etc/ssl/certs/ca-certificates.crt',
 ) {
   include ::httpd::ssl
+  include ::httpd::mod::wsgi
 
   if !defined(Package['git']) {
     package { 'git':
@@ -96,6 +97,37 @@ class apps_site (
         ensure => present,
       }
     }
+  }
+
+  file { "${root_dir}/openstack_catalog/local_settings.py":
+    ensure  => present,
+    mode    => '0644',
+    content => template('apps_site/local_settings.erb'),
+    require => Vcsrepo[$root_dir],
+  }
+
+  exec { 'install-app_catalog' :
+    command     => "/usr/local/bin/pip install ${root_dir}",
+    cwd         => $root_dir,
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
+    require     => File["${root_dir}/openstack_catalog/local_settings.py"],
+    notify      => Service['httpd'],
+  }
+
+  file { "${root_dir}/openstack_catalog/web/static/CACHE":
+    ensure  => directory,
+    owner   => 'www-data',
+    group   => 'www-data',
+    mode    => '0755',
+    require => Vcsrepo[$root_dir],
+  }
+
+  exec { 'collect-static' :
+    command     => "/usr/bin/python ${root_dir}/manage.py collectstatic --noinput",
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
+    require     => File["${root_dir}/openstack_catalog/web/static/CACHE"],
   }
 
   exec { 'make_assets_json' :
