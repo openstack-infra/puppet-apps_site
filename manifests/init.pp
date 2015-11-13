@@ -3,6 +3,7 @@
 class apps_site (
   $vhost_name              = $::fqdn,
   $root_dir                = '/opt/apps_site',
+  $basedir                 = '/opt',
   $serveradmin             = "webmaster@${::domain}",
   $commit                  = 'master',
   $ssl_cert_file_contents  = undef,
@@ -13,6 +14,7 @@ class apps_site (
   $ssl_chain_file          = '/etc/ssl/certs/ca-certificates.crt',
 ) {
   include ::httpd::ssl
+  include ::httpd::mod::wsgi
 
   if !defined(Package['git']) {
     package { 'git':
@@ -96,6 +98,21 @@ class apps_site (
         ensure => present,
       }
     }
+  }
+
+  exec { 'install-app_catalog' :
+    command     => "/usr/local/bin/pip install ${root_dir}",
+    cwd         => $root_dir,
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
+    notify      => Service['httpd'],
+  }
+
+  exec { 'collect-static' :
+    command     => "/usr/bin/python ${root_dir}/manage.py collectstatic --noinput",
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
+    notify      => Service['httpd'],
   }
 
   exec { 'make_assets_json' :
