@@ -6,7 +6,7 @@
     WSGIDaemonProcess appcatalog user=www-data group=www-data threads=5 python-path=/usr/lib/python2.7:/usr/lib/python2.7/plat-x86_64-linux-gnu:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
     WSGIScriptAlias / /usr/local/lib/python2.7/dist-packages/openstack_catalog/wsgi.py
 
-    Alias /static/ <%= @root_dir %>/openstack_catalog/web/static/
+    Alias /static/ <%= @install_dir %>/web/static/
 
     DocumentRoot <%= @docroot %>
     <Directory />
@@ -41,7 +41,7 @@
     WSGIDaemonProcess appcatalogssl user=www-data group=www-data threads=5 python-path=/usr/lib/python2.7:/usr/lib/python2.7/plat-x86_64-linux-gnu:/usr/lib/python2.7/lib-tk:/usr/lib/python2.7/lib-old:/usr/lib/python2.7/lib-dynload:/usr/local/lib/python2.7/dist-packages:/usr/lib/python2.7/dist-packages
     WSGIScriptAlias / /usr/local/lib/python2.7/dist-packages/openstack_catalog/wsgi.py
 
-    Alias /static/ <%= @root_dir %>/openstack_catalog/web/static/
+    Alias /static/ <%= @install_dir %>/web/static/
 
     SSLEngine on
     SSLProtocol All -SSLv2 -SSLv3
