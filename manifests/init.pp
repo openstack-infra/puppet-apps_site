@@ -101,34 +101,33 @@ class apps_site (
   }
 
   exec { 'install-app_catalog' :
-    command     => "/usr/local/bin/pip install ${root_dir}",
-    cwd         => $root_dir,
-    refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
-    require     => File["${install_dir}/local_settings.py"],
-    notify      => Service['httpd'],
+    command   => "/usr/local/bin/pip install ${root_dir}",
+    cwd       => $root_dir,
+    subscribe => Vcsrepo[$root_dir],
+    notify    => Service['httpd'],
   }
 
   file { "${install_dir}/local_settings.py":
     ensure  => present,
     mode    => '0644',
+    require => Exec['install-app_catalog'],
     content => template('apps_site/local_settings.erb'),
-    require => Vcsrepo[$root_dir],
   }
 
-  file { "${install_dir}/web/static/CACHE":
-    ensure  => directory,
-    owner   => 'www-data',
-    group   => 'www-data',
-    mode    => '0755',
-    require => Vcsrepo[$root_dir],
+  file { "${install_dir}/manage.py":
+    ensure  => present,
+    source  => "${root_dir}/manage.py",
+    require => Exec['install-app_catalog'],
   }
 
   exec { 'collect-static' :
-    command     => "/usr/bin/python ${root_dir}/manage.py collectstatic --noinput",
-    refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
-    require     => File["${install_dir}/web/static/CACHE"],
+    command   => "/usr/bin/python ${install_dir}/manage.py collectstatic --noinput",
+    subscribe => File["${install_dir}/manage.py"],
+  }
+
+  exec { 'python-compress' :
+    command   => "/usr/bin/python ${install_dir}/manage.py compress",
+    subscribe => File["${install_dir}/manage.py"],
   }
 
   exec { 'make_assets_json' :
