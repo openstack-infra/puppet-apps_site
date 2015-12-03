@@ -1,0 +1,9 @@
+Verified+2: Jenkins
+Code-Review+2: yolanda.robla <info@ysoft.biz>
+Workflow+1: yolanda.robla <info@ysoft.biz>
+Code-Review+2: Colleen Murphy <colleen@gazlene.net>
+Submitted-by: Jenkins
+Submitted-at: Thu, 03 Dec 2015 11:55:21 +0000
+Reviewed-on: https://review.openstack.org/250061
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
