@@ -1,17 +1,17 @@
 # == Class: apps_site
 #
 class apps_site (
-  $vhost_name              = $::fqdn,
-  $root_dir                = '/opt/apps_site',
-  $install_dir             = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/',
-  $serveradmin             = "webmaster@${::domain}",
   $commit                  = 'master',
+  $install_dir             = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/',
+  $root_dir                = '/opt/apps_site',
+  $serveradmin             = "webmaster@${::domain}",
   $ssl_cert_file_contents  = undef,
   $ssl_key_file_contents   = undef,
   $ssl_chain_file_contents = undef,
   $ssl_cert_file           = '/etc/ssl/certs/ssl-cert-snakeoil.pem',
   $ssl_key_file            = '/etc/ssl/private/ssl-cert-snakeoil.key',
   $ssl_chain_file          = '/etc/ssl/certs/ca-certificates.crt',
+  $vhost_name              = $::fqdn,
 ) {
   include ::httpd::ssl
   include ::httpd::mod::wsgi
