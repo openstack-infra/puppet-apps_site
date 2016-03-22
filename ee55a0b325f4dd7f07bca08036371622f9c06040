@@ -1,0 +1,11 @@
+Code-Review+2: yolanda.robla <yolanda.robla-mota@hpe.com>
+Code-Review+1: Ricardo Carrillo Cruz <ricardo.carrillo.cruz@gmail.com>
+Code-Review+1: Christopher Aedo <doc@aedo.net>
+Code-Review+2: Paul Belanger <pabelanger@redhat.com>
+Workflow+1: Paul Belanger <pabelanger@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 22 Mar 2016 14:25:35 +0000
+Reviewed-on: https://review.openstack.org/294961
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
