@@ -92,6 +92,12 @@ class apps_site (
     }
   }
 
+  if ! defined(Package['python-dateutil']) {
+    package { 'python-dateutil':
+      ensure => present,
+    }
+  }
+
   if ($::lsbdistcodename == 'trusty') {
     if ! defined(Package['zopfli']) {
       package { 'zopfli':
