@@ -2,7 +2,6 @@
 #
 class apps_site (
   $commit                  = 'master',
-  $install_dir             = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/',
   $root_dir                = '/opt/apps_site',
   $serveradmin             = "webmaster@${::domain}",
   $ssl_cert_file_contents  = undef,
@@ -15,6 +14,8 @@ class apps_site (
 ) {
   include ::httpd::ssl
   include ::httpd::mod::wsgi
+
+  $install_dir = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/'
 
   if !defined(Package['git']) {
     package { 'git':
@@ -100,8 +101,15 @@ class apps_site (
     }
   }
 
+  if ! defined(Package['python-pip']) {
+    package { 'python-pip':
+      ensure => present,
+    }
+  }
+
   exec { 'install-app_catalog' :
-    command     => "/usr/local/bin/pip install --upgrade ${root_dir}",
+    command     => "pip install --upgrade ${root_dir}",
+    path        => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
     cwd         => $root_dir,
     refreshonly => true,
     subscribe   => Vcsrepo[$root_dir],
@@ -122,18 +130,20 @@ class apps_site (
   }
 
   exec { 'collect-static' :
-    command   => "/usr/bin/python ${install_dir}/manage.py collectstatic --noinput",
+    command   => "python ${install_dir}/manage.py collectstatic --noinput",
+    path      => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
     subscribe => File["${install_dir}/manage.py"],
   }
 
   exec { 'python-compress' :
-    command   => "/usr/bin/python ${install_dir}/manage.py compress --force",
+    command   => "python ${install_dir}/manage.py compress --force",
+    path      => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
     subscribe => File["${install_dir}/manage.py"],
   }
 
   exec { 'make_assets_json' :
     command     => "${root_dir}/tools/update_assets.sh",
-    path        => '/usr/local/bin:/usr/bin:/bin',
+    path        => ['/usr/local/bin', '/usr/bin:/bin'],
     refreshonly => true,
     subscribe   => Vcsrepo[$root_dir],
   }
