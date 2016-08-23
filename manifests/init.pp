@@ -2,7 +2,6 @@
 #
 class apps_site (
   $commit                  = 'master',
-  $install_dir             = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/',
   $root_dir                = '/opt/apps_site',
   $serveradmin             = "webmaster@${::domain}",
   $ssl_cert_file_contents  = undef,
@@ -15,6 +14,9 @@ class apps_site (
 ) {
   include ::httpd::ssl
   include ::httpd::mod::wsgi
+
+  $install_dir = '/usr/local/lib/python2.7/dist-packages/openstack_catalog/'
+  $app_catalog_change = 'refs/changes/33/337633/17'
 
   if !defined(Package['git']) {
     package { 'git':
@@ -30,6 +32,15 @@ class apps_site (
     require  => [
       Package['git'],
     ]
+  }
+
+  #Remove this when change will be merged
+  exec { "fetch WIP change":
+    command     => "git fetch git://git.openstack.org/openstack/app-catalog ${app_catalog_change} && git checkout FETCH_HEAD",
+    path        => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
+    cwd         => $root_dir,
+    refreshonly => true,
+    subscribe   => Vcsrepo[$root_dir],
   }
 
   ::httpd::vhost { $vhost_name:
@@ -100,11 +111,20 @@ class apps_site (
     }
   }
 
+  if ! defined(Package['python-pip']) {
+    package { 'python-pip':
+      ensure => present,
+    }
+  }
+
+  # When app-catalog will be delivered as package
+  # change exec to package { provider => 'pip'}
   exec { 'install-app_catalog' :
-    command     => "/usr/local/bin/pip install --upgrade ${root_dir}",
+    command     => "pip install --upgrade ${root_dir}",
+    path        => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
     cwd         => $root_dir,
     refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
+    subscribe   => [Vcsrepo[$root_dir], Exec["fetch WIP change"]],
     notify      => Service['httpd'],
   }
 
@@ -122,20 +142,23 @@ class apps_site (
   }
 
   exec { 'collect-static' :
-    command   => "/usr/bin/python ${install_dir}/manage.py collectstatic --noinput",
+    command   => "python ${install_dir}/manage.py collectstatic --noinput",
+    path      => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
     subscribe => File["${install_dir}/manage.py"],
   }
 
-  exec { 'python-compress' :
-    command   => "/usr/bin/python ${install_dir}/manage.py compress --force",
-    subscribe => File["${install_dir}/manage.py"],
-  }
+# Bug in apps-catalog
+#  exec { 'python-compress' :
+#    command   => "python ${install_dir}/manage.py compress --force",
+#    path      => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
+#    subscribe => File["${install_dir}/manage.py"],
+#  }
 
   exec { 'make_assets_json' :
     command     => "${root_dir}/tools/update_assets.sh",
-    path        => '/usr/local/bin:/usr/bin:/bin',
+    path        => ['/usr/local/bin', '/usr/bin:/bin'],
     refreshonly => true,
-    subscribe   => Vcsrepo[$root_dir],
+    subscribe   => Exec['install-app_catalog'],
   }
 
 }
