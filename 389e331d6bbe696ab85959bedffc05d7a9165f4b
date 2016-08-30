@@ -1,0 +1,10 @@
+Code-Review+1: Michael Petersen <mpetason@gmail.com>
+Code-Review+2: yolanda.robla <yroblamo@redhat.com>
+Code-Review+2: Elizabeth K. Joseph <lyz@princessleia.com>
+Workflow+1: Elizabeth K. Joseph <lyz@princessleia.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 30 Aug 2016 22:52:26 +0000
+Reviewed-on: https://review.openstack.org/358909
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
