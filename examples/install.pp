@@ -1,0 +1,1 @@
+class { '::apps_site':}
