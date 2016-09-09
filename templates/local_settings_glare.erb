@@ -1,0 +1,9 @@
+DEBUG = False
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+ALLOWED_HOSTS = ['*']
+DOMAIN = '<%= @domain %>'
+BASE_URL = 'http://<%= @domain %>'
+OPENID_RETURN_URL = 'http://<%= @domain %>/auth/process'
+MEMCACHED_SERVER = '<%= @memcache_server %>'
+GLARE_URL = '<%= @glare_url %>'
