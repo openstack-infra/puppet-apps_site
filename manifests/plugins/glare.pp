@@ -11,6 +11,7 @@ class apps_site::plugins::glare (
   $ssl_cert_file_location    = '/etc/ssl/certs/ssl-cert-snakeoil.pem',
   $ssl_key_file_location     = '/etc/ssl/private/ssl-cert-snakeoil.key',
   $ssl_ca_file_location      = '/etc/ssl/certs/ca-certificates.crt',
+  $extra_params              = '--config-file /usr/local/etc/glare/glare.conf'
 ) inherits ::apps_site::params {
 
   package { 'glare_dev':
@@ -21,12 +22,19 @@ class apps_site::plugins::glare (
   service { 'glare-api':
     ensure   => 'running',
     provider => base,
-    start    => 'nohup /usr/local/bin/glare-api --config-file /usr/local/etc/glare/glare.conf &',
-    restart  => 'killall glare-api; nohup /usr/local/bin/glare-api --config-file /usr/local/etc/glare/glare.conf &',
+    start    => 'nohup glare-api ${extra_params} &',
+    restart  => 'killall glare-api; nohup glare-api ${extra_params} &',
     stop     => 'killall glare-api',
   }
 
-  Package['glare_dev'] -> Service['glare-api']
+  exec { 'glare-db-sync':
+    command     => "glare-db-manage ${extra_params} upgrade",
+    path        => [ '/bin/', '/usr/bin/' , '/usr/local/bin' ],
+    refreshonly => true,
+  }
+
+  Package['glare_dev'] ~> Exec['glare-db-sync'] -> Service['glare-api']
+
 #  include ::glare::params
 #  include ::glare::db::sync
 #
