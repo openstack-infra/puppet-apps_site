@@ -16,9 +16,7 @@ class apps_site::wsgi::apache (
 ) inherits ::apps_site::params {
 
   class { '::apache':
-    mpm_module    => false,
     default_vhost => false,
-    purge_configs => false,
   }
 
   if $use_ssl {
