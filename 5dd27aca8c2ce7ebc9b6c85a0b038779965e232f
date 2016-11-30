@@ -1,0 +1,10 @@
+Code-Review+1: Kairat Kushaev <kkushaev@mirantis.com>
+Code-Review+2: Ricardo Carrillo Cruz <ricardo.carrillo.cruz@gmail.com>
+Code-Review+2: Jeremy Stanley <fungi@yuggoth.org>
+Workflow+1: Jeremy Stanley <fungi@yuggoth.org>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 30 Nov 2016 16:13:26 +0000
+Reviewed-on: https://review.openstack.org/396314
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
