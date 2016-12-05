@@ -1,8 +1,8 @@
 HOSTS:
-  centos-70-x64:
+  ubuntu-16.04-amd64:
     roles:
       - master
-    platform: 7-x86_64
+    platform: ubuntu-16.04-amd64
     hypervisor: none
     ip: 127.0.0.1
 CONFIG:
