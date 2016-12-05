@@ -44,9 +44,13 @@ class apps_site::catalog (
     }
 
     exec { 'import-glare-assets' :
-      command => "app-catalog-import-assets --glare_url ${glare_url} --assets_file ${real_assets_file}",
-      path    => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
-      require => [Package['openstack-app-catalog'], Exec['app-catalog-compress']],
+      command     => "app-catalog-import-assets --glare_url ${glare_url} --assets_file ${real_assets_file}",
+      path        => ['/bin/', '/sbin/' , '/usr/bin/', '/usr/sbin/', '/usr/local/bin', '/usr/local/sbin'],
+      require     => [Package['openstack-app-catalog'], Exec['app-catalog-compress']],
+      refreshonly => true,
+      try_sleep   => 5,
+      tries       => 10,
+      logoutput   => on_failure,
     }
   }
 }
