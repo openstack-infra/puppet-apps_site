@@ -10,6 +10,7 @@
   "dependencies": [
     { "name": "openstackinfra/vcsrepo","version_requirement":">= 0.0.8"},
     { "name": "openstackinfra/httpd", "version_requirement": "0.x" },
-    { "name": "puppetlabs/apache", "version_requirement": ">=1.6.0" }
+    { "name": "puppetlabs/apache", "version_requirement": ">=1.6.0" },
+    { "name": "saz/memcached", "version_requirement": ">=2.7.1" }
   ]
 }
