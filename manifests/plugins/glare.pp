@@ -3,6 +3,7 @@
 class apps_site::plugins::glare (
   $vhost_name                = $::fqdn,
   $memcache_server           = '127.0.0.1:11211',
+  $memcached_listen_ip       = '127.0.0.1',
   $cookie_name               = 's.aoo',
   $use_ssl                   = false,
   $ssl_cert_file_content     = undef,
@@ -13,6 +14,11 @@ class apps_site::plugins::glare (
   $ssl_ca_file_location      = '/etc/ssl/certs/ca-certificates.crt',
   $extra_params              = '--config-file /usr/local/etc/glare/glare.conf'
 ) inherits ::apps_site::params {
+
+  class { 'memcached':
+    listen_ip => $memcached_listen_ip,
+    pidfile => 'false',
+  }
 
   package { 'glare_dev':
     ensure   => present,
@@ -36,7 +42,10 @@ class apps_site::plugins::glare (
     logoutput   => on_failure,
   }
 
-  Package['glare_dev'] ~> Exec['glare-db-sync'] -> Service['glare-api']
+  Class['memcached'] ->
+    Package['glare_dev'] ~>
+      Exec['glare-db-sync'] ->
+        Service['glare-api']
 
 #  include ::glare::params
 #  include ::glare::db::sync
