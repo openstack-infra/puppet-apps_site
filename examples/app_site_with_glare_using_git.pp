@@ -17,11 +17,11 @@ if $use_ssl {
 $import_assets = true
 
 class { '::apps_site':
-  without_glare   => $without_glare,
-  use_pip         => false,
-  use_git         => true,
-  repo_url        => $repo_url,
-  commit          => $commit,
+  without_glare => $without_glare,
+  use_pip       => false,
+  use_git       => true,
+  repo_url      => $repo_url,
+  commit        => $commit,
 }
 
 class { '::apps_site::plugins::glare':
