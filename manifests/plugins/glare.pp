@@ -41,10 +41,10 @@ class apps_site::plugins::glare (
     logoutput   => on_failure,
   }
 
-  Class['memcached'] ->
-    Package['glare_dev'] ~>
-      Exec['glare-db-sync'] ->
-        Service['glare-api']
+  Class['memcached']
+  -> Package['glare_dev']
+  ~> Exec['glare-db-sync']
+  -> Service['glare-api']
 
 #  include ::glare::params
 #  include ::glare::db::sync

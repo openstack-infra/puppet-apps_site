@@ -36,7 +36,7 @@ class { '::apps_site::catalog':
   memcache_server => $memcache_server,
 }
 
-Class['::apps_site'] ->
-  Class['::apps_site::plugins::glare'] ->
-      Class['::apps_site::wsgi::apache'] ->
-        Class['::apps_site::catalog']
+Class['::apps_site']
+-> Class['::apps_site::plugins::glare']
+-> Class['::apps_site::wsgi::apache']
+-> Class['::apps_site::catalog']
