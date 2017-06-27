@@ -1,0 +1,10 @@
+Code-Review+1: Christopher Aedo <doc@aedo.net>
+Code-Review+2: Monty Taylor <mordred@inaugust.com>
+Code-Review+2: Ian Wienand <iwienand@redhat.com>
+Workflow+1: Ian Wienand <iwienand@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 27 Jun 2017 20:12:14 +0000
+Reviewed-on: https://review.openstack.org/477107
+Project: openstack-infra/puppet-apps_site
+Branch: refs/heads/master
